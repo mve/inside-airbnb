@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blazor", "blazor\blazor.csproj", "{B9AD28F6-E3DB-4326-A584-64956232D316}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{44352708-7F83-4354-AA92-AD09CDADA80D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9AD28F6-E3DB-4326-A584-64956232D316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9AD28F6-E3DB-4326-A584-64956232D316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9AD28F6-E3DB-4326-A584-64956232D316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9AD28F6-E3DB-4326-A584-64956232D316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44352708-7F83-4354-AA92-AD09CDADA80D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44352708-7F83-4354-AA92-AD09CDADA80D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44352708-7F83-4354-AA92-AD09CDADA80D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44352708-7F83-4354-AA92-AD09CDADA80D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
