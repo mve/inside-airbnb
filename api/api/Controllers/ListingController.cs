@@ -21,9 +21,10 @@ public class ListingController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Listing>>> Get()
+    public async Task<ActionResult<List<Listing>>> Get([FromQuery] int take, [FromQuery] int skip)
     {
-        return Ok(await _context.Listings.ToListAsync());
+        // Skip the first 50 listings and get the next 50.
+        return Ok(await _context.Listings.Skip(skip).Take(take).ToListAsync());
     }
 
     [HttpGet("{id}")]
