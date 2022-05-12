@@ -1,6 +1,4 @@
-# Inside Airbnb DotNet API
-
-Dotnet project using [Inside Airbnb](http://insideairbnb.com/) dataset.
+# Inside Airbnb ASP.NET Core API
 
 ## Starting the project
 
