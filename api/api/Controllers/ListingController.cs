@@ -27,6 +27,13 @@ public class ListingController : ControllerBase
         // Skip the first 50 listings and get the next 50.
         return Ok(await _listingRepository.GetAll(skip, take));
     }
+    
+    [HttpGet]
+    [Route("summary")]
+    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    {
+        return Ok(await _listingRepository.GetAllSummarized());
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<List<Listing>>> GetById(int id)

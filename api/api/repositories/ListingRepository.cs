@@ -17,6 +17,21 @@ public class ListingRepository : IListingRepository
         return await _context.Listings.Skip(skip).Take(take).ToListAsync();
     }
 
+    public async Task<IEnumerable<ListingSummarized>> GetAllSummarized()
+    {
+        return await _context.Listings.Select(l => new ListingSummarized
+        {
+            Id = l.Id,
+            Name = l.Name,
+            HostName = l.HostName,
+            Neighbourhood = l.Neighbourhood,
+            Latitude = l.Latitude,
+            Longitude = l.Longitude,
+            Price = l.Price,
+            NumberOfReviews = l.NumberOfReviews
+        }).ToListAsync();
+    }
+
     public async Task<Listing?> Get(int id)
     {
         return await _context.Listings.Include(l => l.Reviews).FirstOrDefaultAsync(l => l.Id == id);
