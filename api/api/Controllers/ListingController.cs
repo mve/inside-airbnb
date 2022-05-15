@@ -21,18 +21,18 @@ public class ListingController : ControllerBase
         _listingRepository = listingRepository;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<Listing>>> Get([FromQuery] int take, [FromQuery] int skip)
-    {
-        // Skip the first 50 listings and get the next 50.
-        return Ok(await _listingRepository.GetAll(skip, take));
-    }
+    // [HttpGet]
+    // public async Task<ActionResult<List<Listing>>> Get([FromQuery] int take, [FromQuery] int skip)
+    // {
+    //     // Skip the first 50 listings and get the next 50.
+    //     return Ok(await _listingRepository.GetAll(skip, take));
+    // }
     
     [HttpGet]
     [Route("summary")]
-    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip)
     {
-        return Ok(await _listingRepository.GetAllSummarized());
+        return Ok(await _listingRepository.GetAllSummarized(take, skip));
     }
 
     [HttpGet("{id}")]

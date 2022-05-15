@@ -12,12 +12,12 @@ public class ListingRepository : IListingRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Listing>> GetAll(int take, int skip)
-    {
-        return await _context.Listings.Skip(skip).Take(take).ToListAsync();
-    }
+    // public async Task<IEnumerable<Listing>> GetAll(int take, int skip)
+    // {
+    //     return await _context.Listings.Skip(skip).Take(take).ToListAsync();
+    // }
 
-    public async Task<IEnumerable<ListingSummarized>> GetAllSummarized()
+    public async Task<IEnumerable<ListingSummarized>> GetAllSummarized(int take, int skip)
     {
         return await _context.Listings.Select(l => new ListingSummarized
         {
@@ -29,7 +29,7 @@ public class ListingRepository : IListingRepository
             Longitude = l.Longitude,
             Price = l.Price,
             NumberOfReviews = l.NumberOfReviews
-        }).ToListAsync();
+        }).Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<Listing?> Get(int id)
