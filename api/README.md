@@ -11,3 +11,6 @@
 
 Use the following command to create the models based off of the database.
 ``` dotnet ef dbcontext scaffold "Server=localhost;Database=<DATABASE_HERE>;User Id=sa;password=<PASSWORD_HERE>;Trusted_Connection=False" Microsoft.EntityFrameworkCore.SqlServer -o Models ```
+
+## Starting Redis cache
+```docker run -p 6379:6379 --name inside-airbnb-redis -d redis```

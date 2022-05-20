@@ -20,7 +20,8 @@ const Map = () => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v11',
+      // style: 'mapbox://styles/mapbox/streets-v11',
+      style: 'mapbox://styles/mikevanegmond/cl3bie7v4000z14qoqq7xlr37',
       center: [lng, lat],
       zoom: zoom
     });
@@ -86,7 +87,7 @@ const Map = () => {
           type: 'geojson',
           data: listingsGeoJson,
           cluster: true,
-          clusterMaxZoom: 14, // Max zoom to cluster points on
+          clusterMaxZoom: 12, // Max zoom to cluster points on
           clusterRadius: 50 // Radius of each cluster when clustering points
         });
       }
@@ -105,11 +106,11 @@ const Map = () => {
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#51bbd6',
+              '#dbeafe',
               100,
-              '#f1f075',
+              '#3b82f6',
               750,
-              '#f28cb1'
+              '#8b5cf6'
             ],
             'circle-radius': [
               'step',
