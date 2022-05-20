@@ -17,12 +17,12 @@ namespace api.Controllers;
 public class ListingController : ControllerBase
 {
     private readonly IListingRepository _listingRepository;
-    private readonly IDistributedCache _cache;
+    // private readonly IDistributedCache _cache;
 
-    public ListingController(IListingRepository listingRepository, IDistributedCache cache)
+    public ListingController(IListingRepository listingRepository)
     {
         _listingRepository = listingRepository;
-        _cache = cache;
+        // _cache = cache;
     }
 
     // [HttpGet]
@@ -34,10 +34,10 @@ public class ListingController : ControllerBase
 
     [HttpGet]
     [Route("summary")]
-    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip)
+    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip, [FromServices] IDistributedCache cache)
     {
         string cacheKey = $"listings-{skip}-{take}";
-        var cachedListings = await _cache.GetStringAsync(cacheKey);
+        var cachedListings = await cache.GetStringAsync(cacheKey);
 
         if (cachedListings != null)
         {
@@ -52,7 +52,7 @@ public class ListingController : ControllerBase
             .SetSlidingExpiration(TimeSpan.FromSeconds(30));
         
         // save listings in cache
-        await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
+        await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
 
         return Ok(listings);
     }

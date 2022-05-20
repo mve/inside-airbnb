@@ -1,29 +1,49 @@
 using api.Models;
 using api.repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using StackExchange.Redis;
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy  =>
+        policy =>
         {
             policy.WithOrigins("http://localhost:3000"); // TODO change to live endpoint on deployment
         });
 });
 
+// builder.Services.AddStackExchangeRedisCache(options =>
+// {
+//     options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+//     options.InstanceName = "SampleInstance";
+// });
+
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+    options.ConfigurationOptions = new ConfigurationOptions
+    {
+        EndPoints = { "localhost:6379" },
+        ConnectTimeout = 5000,
+        SyncTimeout = 60000,
+        AsyncTimeout = 60000
+    };
+    // options.Configuration = Configuration["RedisConnectionStrings"];
     options.InstanceName = "SampleInstance";
 });
+
+
 
 // Add services to the container.
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore // https://stackoverflow.com/questions/59199593/net-core-3-0-possible-object-cycle-was-detected-which-is-not-supported
+        options.SerializerSettings.ReferenceLoopHandling =
+            Newtonsoft.Json.ReferenceLoopHandling
+                .Ignore // https://stackoverflow.com/questions/59199593/net-core-3-0-possible-object-cycle-was-detected-which-is-not-supported
 );
 builder.Services.AddDbContext<DataContext>(options =>
 {
