@@ -14,6 +14,12 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+    options.InstanceName = "SampleInstance";
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>

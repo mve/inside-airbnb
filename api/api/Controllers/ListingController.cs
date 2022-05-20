@@ -7,6 +7,8 @@ using api.repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace api.Controllers;
 
@@ -15,10 +17,12 @@ namespace api.Controllers;
 public class ListingController : ControllerBase
 {
     private readonly IListingRepository _listingRepository;
+    private readonly IDistributedCache _cache;
 
-    public ListingController(IListingRepository listingRepository)
+    public ListingController(IListingRepository listingRepository, IDistributedCache cache)
     {
         _listingRepository = listingRepository;
+        _cache = cache;
     }
 
     // [HttpGet]
@@ -27,12 +31,30 @@ public class ListingController : ControllerBase
     //     // Skip the first 50 listings and get the next 50.
     //     return Ok(await _listingRepository.GetAll(skip, take));
     // }
-    
+
     [HttpGet]
     [Route("summary")]
     public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip)
     {
-        return Ok(await _listingRepository.GetAllSummarized(take, skip));
+        string cacheKey = $"listings-{skip}-{take}";
+        var cachedListings = await _cache.GetStringAsync(cacheKey);
+
+        if (cachedListings != null)
+        {
+            Console.WriteLine("Cache hit");
+            return Ok(JsonConvert.DeserializeObject<List<ListingSummarized>>(cachedListings));
+        }
+
+        var listings = await _listingRepository.GetAllSummarized(take, skip);
+        
+        // TODO change to a longer cache time
+        var cacheEntryOptions = new DistributedCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromSeconds(30));
+        
+        // save listings in cache
+        await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
+
+        return Ok(listings);
     }
 
     [HttpGet("{id}")]
