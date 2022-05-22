@@ -17,12 +17,12 @@ namespace api.Controllers;
 public class ListingController : ControllerBase
 {
     private readonly IListingRepository _listingRepository;
-    // private readonly IDistributedCache _cache;
+    private readonly IDistributedCache _cache;
 
-    public ListingController(IListingRepository listingRepository)
+    public ListingController(IListingRepository listingRepository, IDistributedCache cache)
     {
         _listingRepository = listingRepository;
-        // _cache = cache;
+        _cache = cache;
     }
 
     // [HttpGet]
@@ -34,10 +34,10 @@ public class ListingController : ControllerBase
 
     [HttpGet]
     [Route("summary")]
-    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip, [FromServices] IDistributedCache cache)
+    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] int take, [FromQuery] int skip)
     {
         string cacheKey = $"listings-{skip}-{take}";
-        var cachedListings = await cache.GetStringAsync(cacheKey);
+        var cachedListings = await _cache.GetStringAsync(cacheKey);
 
         if (cachedListings != null)
         {
@@ -46,21 +46,41 @@ public class ListingController : ControllerBase
         }
 
         var listings = await _listingRepository.GetAllSummarized(take, skip);
-        
+
         // TODO change to a longer cache time
         var cacheEntryOptions = new DistributedCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(30));
-        
+
         // save listings in cache
-        await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
+        await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
 
         return Ok(listings);
     }
 
+    // [HttpGet("{id}")]
+    // public async Task<ActionResult<List<Listing>>> GetById(int id)
+    // {
+    //     var listing = await _listingRepository.Get(id);
+    //
+    //     if (listing == null)
+    //     {
+    //         return BadRequest("Listing not found.");
+    //     }
+    //
+    //     return Ok(listing);
+    // }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<List<Listing>>> GetById(int id)
     {
-        // var listing = await _context.Listings.FindAsync(id);
+        string cacheKey = $"listing-{id}";
+        var cachedListing = await _cache.GetStringAsync(cacheKey);
+
+        if (cachedListing != null)
+        {
+            Console.WriteLine("Cache hit");
+            return Ok(JsonConvert.DeserializeObject<Listing>(cachedListing));
+        }
 
         var listing = await _listingRepository.Get(id);
 
@@ -68,6 +88,16 @@ public class ListingController : ControllerBase
         {
             return BadRequest("Listing not found.");
         }
+
+        // TODO change to a longer cache time
+        var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(30));
+
+        // save listing in cache
+        await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listing, Formatting.Indented,
+            new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }), cacheEntryOptions);
 
         return Ok(listing);
     }
