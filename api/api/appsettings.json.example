@@ -3,10 +3,9 @@
     "DefaultConnection": "Server=localhost;Database=airbnb2021;User Id=sa;password=Password@1234;Trusted_Connection=False;",
     "RedisCache": "localhost:6379"
   },
-  "0auth": {
-     "Domain": "",
-     "ClientId": "",
-     "ClientSecret": ""
+  "Auth0": {
+     "Domain": "***.auth0.com",
+     "Audience": "https://localhost:7114/"
    },
   "Logging": {
     "LogLevel": {

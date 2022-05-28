@@ -22,26 +22,25 @@ builder.Services.AddCors(options =>
         });
 });
 
-// builder.Services.AddStackExchangeRedisCache(options =>
-// {
-//     // options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
-//     options.Configuration = "localhost";
-//     options.InstanceName = "SampleInstance";
-// });
-
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.ConfigurationOptions = new ConfigurationOptions
-    {
-        EndPoints = { "localhost" },
-        ConnectTimeout = 5000,
-        SyncTimeout = 60000,
-        AsyncTimeout = 60000,
-        AbortOnConnectFail = false,
-    };
-    // options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+    options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
     options.InstanceName = "SampleInstance";
 });
+
+// builder.Services.AddStackExchangeRedisCache(options =>
+// {
+//     options.ConfigurationOptions = new ConfigurationOptions
+//     {
+//         EndPoints = { "localhost" },
+//         ConnectTimeout = 5000,
+//         SyncTimeout = 60000,
+//         AsyncTimeout = 60000,
+//         AbortOnConnectFail = false,
+//     };
+//     // options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+//     options.InstanceName = "SampleInstance";
+// });
 
 
 
