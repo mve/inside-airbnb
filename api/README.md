@@ -14,3 +14,6 @@ Use the following command to create the models based off of the database.
 
 ## Starting Redis cache
 ```docker run -p 6379:6379 --name inside-airbnb-redis -d redis```
+
+# optimalizatie
+* AsNoTracking toevoegen aan alle queries
