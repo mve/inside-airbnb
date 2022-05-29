@@ -57,11 +57,35 @@ public class ListingController : ControllerBase
 
         return Ok(listings);
     }
+    
+    [HttpGet]
+    [Route("summary/all")]
+    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    {
+        string cacheKey = $"listings-all";
+        var cachedListings = await _cache.GetStringAsync(cacheKey);
+        
+        if (cachedListings != null)
+        {
+            return Ok(JsonConvert.DeserializeObject<List<ListingSummarized>>(cachedListings));
+        }
+
+        var listings = await _listingRepository.GetAllSummarized();
+
+        // TODO change to a longer cache time
+        var cacheEntryOptions = new DistributedCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromSeconds(30));
+        
+        // save listings in cache
+        await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
+
+        return Ok(listings);
+    }
 
     [HttpGet]
     [Route("statistics")]
     [Authorize("read:statistics")]
-    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    public async Task<ActionResult<List<ListingSummarized>>> GetStatistics()
     {
         return Ok("statistics"); // TODO implement
     }

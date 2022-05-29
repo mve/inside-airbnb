@@ -19,17 +19,18 @@ public class ListingRepository : IListingRepository
 
     public async Task<IEnumerable<ListingSummarized>> GetAllSummarized(int take, int skip)
     {
-        return await _context.Listings.Select(l => new ListingSummarized
-        {
-            Id = l.Id,
-            Name = l.Name,
-            HostName = l.HostName,
-            Neighbourhood = l.Neighbourhood,
-            Latitude = l.Latitude,
-            Longitude = l.Longitude,
-            Price = l.Price,
-            NumberOfReviews = l.NumberOfReviews
-        }).Skip(skip).Take(take).ToListAsync();
+        var listings = await _context.Listings.Select(l => FormatListingSummarized(l))
+            .Skip(skip).Take(take).ToListAsync();
+
+        return listings;
+    }
+
+    public async Task<IEnumerable<ListingSummarized>> GetAllSummarized()
+    {
+        var listings = await _context.Listings.Select(l => FormatListingSummarized(l)
+        ).ToListAsync();
+
+        return listings;
     }
 
     public async Task<Listing?> Get(int id)
@@ -167,5 +168,22 @@ public class ListingRepository : IListingRepository
 
         _context.Listings.Remove(dbListing);
         await _context.SaveChangesAsync();
+    }
+
+    private static ListingSummarized FormatListingSummarized(Listing l)
+    {
+        var listingSummarized = new ListingSummarized
+        {
+            Id = l.Id,
+            Name = l.Name,
+            HostName = l.HostName,
+            Neighbourhood = l.Neighbourhood,
+            Latitude = l.Latitude,
+            Longitude = l.Longitude,
+            Price = Convert.ToDouble(l.Price.Split("$")[1]),
+            NumberOfReviews = l.NumberOfReviews
+        };
+
+        return listingSummarized;
     }
 }
