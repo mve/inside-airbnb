@@ -43,13 +43,12 @@ public class ListingController : ControllerBase
         
         if (cachedListings != null)
         {
-            Console.WriteLine("Cache hit");
             return Ok(JsonConvert.DeserializeObject<List<ListingSummarized>>(cachedListings));
         }
 
         var listings = await _listingRepository.GetAllSummarized(take, skip);
 
-        // // TODO change to a longer cache time
+        // TODO change to a longer cache time
         var cacheEntryOptions = new DistributedCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromSeconds(30));
         
@@ -59,22 +58,15 @@ public class ListingController : ControllerBase
         return Ok(listings);
     }
 
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult<List<Listing>>> GetById(int id)
-    // {
-    //     var listing = await _listingRepository.Get(id);
-    //
-    //     if (listing == null)
-    //     {
-    //         return BadRequest("Listing not found.");
-    //     }
-    //
-    //     return Ok(listing);
-    // }
+    [HttpGet]
+    [Route("statistics")]
+    [Authorize("read:statistics")]
+    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    {
+        return Ok("statistics"); // TODO implement
+    }
 
     [HttpGet("{id}")]
-    // [Authorize]
-    [Authorize("read:statistics")]
     public async Task<ActionResult<List<Listing>>> GetById(int id)
     {
         string cacheKey = $"listing-{id}";

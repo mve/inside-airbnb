@@ -4,6 +4,7 @@ import Footer from '../components/core/Footer'
 import Map from '../components/map/map';
 import Admin from '../components/admin/admin';
 import { Auth0Provider } from "@auth0/auth0-react";
+import Filters from '../components/map/Filters';
 
 export default function Home() {
   return (
@@ -15,21 +16,25 @@ export default function Home() {
 
       <NavBar/>
 
-      <main className="container mx-auto">
-        Main content here...
+      <main className="container mx-auto grid grid-cols-3">
 
-        <Map/>
+        <div className="col-span-2">
+          <Map/>
+        </div>
 
-        <Auth0Provider
-          domain="dev-q9qzn2lm.us.auth0.com"
-          clientId="5eDc8JhFc7TylAQiiyFRnaW38VL4Qmrb"
-          redirectUri="http://localhost:3000/"
-          scope="read:statistics"
-          audience="https://localhost:7114/"
-        >
-          <Admin/>
-        </Auth0Provider>
+        <div>
+          <Filters/>
 
+          <Auth0Provider
+            domain="dev-q9qzn2lm.us.auth0.com"
+            clientId="5eDc8JhFc7TylAQiiyFRnaW38VL4Qmrb"
+            redirectUri="http://localhost:3000/"
+            scope="read:statistics"
+            audience="https://localhost:7114/"
+          >
+            <Admin/>
+          </Auth0Provider>
+        </div>
 
       </main>
 

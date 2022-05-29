@@ -2,20 +2,19 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import { useAuth0 } from "@auth0/auth0-react";
 import Image from 'next/image';
+import { useState } from 'react';
 
 const Admin = () => {
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  const { getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const [statistics, setStatistics] = useState([]);
 
-  const callSecureApi = async () => {
+  const getStatistics = async () => {
     try {
       const token = await getAccessTokenSilently();
 
-      console.log(token);
-
       const response = await fetch(
-        `https://localhost:7114/Listing/137026`,
+        `https://localhost:7114/Listing/statistics`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -25,10 +24,10 @@ const Admin = () => {
 
       const responseData = await response.json();
 
-      // setMessage(responseData.message);
+      setStatistics(responseData);
     }
     catch (error) {
-      // setMessage(error.message);
+      console.log("Error fetching statistics: ", error); // TODO hide on production
     }
   }
 
@@ -38,14 +37,14 @@ const Admin = () => {
 
   return (
     <div>
-      Admin
+      <h2 className="text-lg font-bold">Admin</h2>
 
       <button
         type="button"
-        className="btn btn-primary"
-        onClick={callSecureApi}
+        className="border rounded-lg bg-indigo-500 px-3 py-1 text-white"
+        onClick={getStatistics}
       >
-        Get Protected Message
+        Get statistics
       </button>
 
 
@@ -57,7 +56,7 @@ const Admin = () => {
           <p>
             Hallo {user.name}
           </p>
-          <Image src={user.picture} width={100} height={100} alt="Profile" />
+          <Image src={user.picture} width={100} height={100} alt="Profile"/>
         </div>
       )}
 
