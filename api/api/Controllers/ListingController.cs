@@ -60,8 +60,14 @@ public class ListingController : ControllerBase
     
     [HttpGet]
     [Route("summary/all")]
-    public async Task<ActionResult<List<ListingSummarized>>> Get()
+    public async Task<ActionResult<List<ListingSummarized>>> Get([FromQuery] bool nocache)
     {
+        if (nocache)
+        {
+            var listingsNoCache = await _listingRepository.GetAllSummarized();
+            return Ok(listingsNoCache);
+        }
+        
         string cacheKey = $"listings-all";
         var cachedListings = await _cache.GetStringAsync(cacheKey);
         

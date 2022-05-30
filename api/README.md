@@ -7,6 +7,14 @@
 * `` docker-compose up -d ``
 * Run `` dotnet watch --project api/api.csproj`` to start the API.
 
+## Connecting to the database
+Connection details:
+Connection type: Microsoft SQL Server
+Server: 127.0.0.1, 1435
+Authentication type: SQL Login
+User name: sa
+Password: <your password>
+
 ## Command for scaffolding models
 
 Use the following command to create the models based off of the database.

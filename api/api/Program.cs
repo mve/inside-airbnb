@@ -32,13 +32,16 @@ builder.Services.AddStackExchangeRedisCache(options =>
 // {
 //     options.ConfigurationOptions = new ConfigurationOptions
 //     {
-//         EndPoints = { "localhost" },
+//         EndPoints =
+//         {
+//             {"inside-airbnb.redis.cache.windows.net", 6380}
+//         },
 //         ConnectTimeout = 5000,
 //         SyncTimeout = 60000,
 //         AsyncTimeout = 60000,
 //         AbortOnConnectFail = false,
 //     };
-//     // options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
+//     options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
 //     options.InstanceName = "SampleInstance";
 // });
 
