@@ -53,7 +53,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 );
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure();
+        });
 });
 
 string domain = $"https://{builder.Configuration["Auth0:Domain"]}/";

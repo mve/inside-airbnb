@@ -1,3 +1,4 @@
+using System.Globalization;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -180,7 +181,7 @@ public class ListingRepository : IListingRepository
             Neighbourhood = l.Neighbourhood,
             Latitude = l.Latitude,
             Longitude = l.Longitude,
-            Price = Convert.ToDouble(l.Price.Split("$")[1]),
+            Price = Convert.ToDouble(l.Price.Split("$")[1], CultureInfo.InvariantCulture),
             NumberOfReviews = l.NumberOfReviews
         };
 

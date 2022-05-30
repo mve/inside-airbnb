@@ -6,7 +6,7 @@ services:
       context: .
     restart: always
     ports:
-      - "1433:1433"
+      - "1435:1433"
     volumes:
       - data:/var/opt/mssql
     env_file:
