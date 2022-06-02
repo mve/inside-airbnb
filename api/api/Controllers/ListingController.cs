@@ -50,7 +50,7 @@ public class ListingController : ControllerBase
 
         // TODO change to a longer cache time
         var cacheEntryOptions = new DistributedCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromSeconds(30));
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
         
         // save listings in cache
         await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
@@ -80,8 +80,8 @@ public class ListingController : ControllerBase
 
         // TODO change to a longer cache time
         var cacheEntryOptions = new DistributedCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromSeconds(30));
-        
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
         // save listings in cache
         await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listings), cacheEntryOptions);
 
@@ -97,14 +97,25 @@ public class ListingController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<List<Listing>>> GetById(int id)
+    public async Task<ActionResult<List<Listing>>> GetById(int id, [FromQuery] bool nocache)
     {
+        if (nocache)
+        {
+            var listingNoCache = await _listingRepository.Get(id);
+
+            if (listingNoCache == null)
+            {
+                return BadRequest("Listing not found.");
+            }
+            
+            return Ok(listingNoCache);
+        }
+        
         string cacheKey = $"listing-{id}";
         var cachedListing = await _cache.GetStringAsync(cacheKey);
         
         if (cachedListing != null)
         {
-            Console.WriteLine("Cache hit");
             return Ok(JsonConvert.DeserializeObject<Listing>(cachedListing));
         }
 
@@ -114,9 +125,10 @@ public class ListingController : ControllerBase
         {
             return BadRequest("Listing not found.");
         }
+        
+        
 
-        // // TODO change to a longer cache time
-        var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(30));
+        var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(5));
         
         // save listing in cache
         await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(listing, Formatting.Indented,

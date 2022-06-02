@@ -8,6 +8,6 @@ public class ListingSummarized
     public string? Neighbourhood { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
-    public double? Price { get; set; }
+    public string? Price { get; set; }
     public int? NumberOfReviews { get; set; }
 }

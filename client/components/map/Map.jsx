@@ -5,22 +5,19 @@ import axios from 'axios';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZXZhbmVnbW9uZCIsImEiOiJjbDJua2l6N3gweHp6M2luazRudnhvYjlvIn0.dhCIBfF6WJztCACIlu8FOQ';
 
-const Map = () => {
+const Map = ({listingsGeoJson}) => {
 
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(4.90);
   const [lat, setLat] = useState(52.37);
   const [zoom, setZoom] = useState(10);
-  const [listings, setListings] = useState(null);
-  const [listingsGeoJson, setListingsGeoJson] = useState(null);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      // style: 'mapbox://styles/mapbox/streets-v11',
       style: 'mapbox://styles/mikevanegmond/cl3bie7v4000z14qoqq7xlr37',
       center: [lng, lat],
       zoom: zoom
@@ -38,13 +35,10 @@ const Map = () => {
   });
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get('https://localhost:7114/Listing/summary/all');
-      setListings(response.data);
-      setListingsGeoJson(formatGeoJson(response.data));
+    if (map.current.getSource('listings')) {
+      map.current.getSource('listings').setData(listingsGeoJson);
     }
-    fetchData();
-  }, []);
+  }, [listingsGeoJson]);
 
   useEffect(() => {
     map.current.on('load', () => {
@@ -179,37 +173,6 @@ const Map = () => {
 
     });
   }, [listingsGeoJson]);
-
-  const formatGeoJson = (listings) => {
-
-    return {
-      type: 'FeatureCollection',
-      features: listings.map(listing => {
-
-        return {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [
-              parseFloat(listing.longitude.toString().substring(0,
-                1) + '.' + listing.longitude.toString().substring(1)),
-              parseFloat(listing.latitude.toString().substring(0,
-                2) + '.' + listing.latitude.toString().substring(2))
-            ]
-          },
-          properties: {
-            id: listing.id,
-            name: listing.name,
-            hostname: listing.hostName,
-            neighbourhood: listing.neighbourhood,
-            price: listing.price,
-            numberOfReviews: listing.numberOfReviews,
-          }
-        }
-      })
-    };
-
-  }
 
   return (
     <div className="relative">

@@ -5,8 +5,98 @@ import Map from '../components/map/map';
 import Admin from '../components/admin/admin';
 import { Auth0Provider } from "@auth0/auth0-react";
 import Filters from '../components/map/Filters';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function Home() {
+
+  const [filters, setFilters] = useState({
+    priceFilter: 250,
+    neighbourhoodFilter: '',
+    reviewsFilter: 0
+  });
+
+  const [listings, setListings] = useState([]);
+  const [listingsGeoJson, setListingsGeoJson] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get('https://localhost:7114/Listing/summary?skip=0&take=100');
+
+      setListings(formatListings(response.data));
+      setListingsGeoJson(formatGeoJson(formatListings(response.data)));
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("formatting geojson...");
+    setListingsGeoJson(formatGeoJson(listings));
+    console.log(listingsGeoJson);
+    console.log("done formatting geojson...");
+
+  }, [listings, filters]);
+
+  const formatListings = (listings) => {
+
+    return listings.map(listing => {
+
+      let formattedPrice = listing.price.replace(/[^0-9]/g, '');
+      formattedPrice = parseInt(formattedPrice.substring(0, formattedPrice.length - 2));
+
+      return {
+        id: listing.id,
+        name: listing.name,
+        hostname: listing.hostName,
+        neighbourhood: listing.neighbourhood,
+        price: formattedPrice,
+        numberOfReviews: listing.numberOfReviews,
+        latitude: parseFloat(listing.latitude.toString().substring(0,
+          2) + '.' + listing.latitude.toString().substring(2)),
+        longitude: parseFloat(listing.longitude.toString().substring(0,
+          1) + '.' + listing.longitude.toString().substring(1)),
+      }
+    });
+  }
+
+  const formatGeoJson = (listings) => {
+
+    listings = listings.filter(listing => {
+      return listing.price <= filters.priceFilter &&
+        listing.numberOfReviews >= filters.reviewsFilter &&
+        listing.neighbourhood.toLowerCase().includes(filters.neighbourhoodFilter.toLowerCase());
+    });
+
+    return {
+      type: 'FeatureCollection',
+      features: listings.map(listing => {
+
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [
+              listing.longitude,
+              listing.latitude
+            ]
+          },
+          properties: {
+            id: listing.id,
+            name: listing.name,
+            hostname: listing.hostname,
+            neighbourhood: listing.neighbourhood,
+            price: listing.price,
+            numberOfReviews: listing.numberOfReviews,
+          }
+        }
+
+      })
+    };
+
+  }
+
+
   return (
     <div>
       <Head>
@@ -18,12 +108,15 @@ export default function Home() {
 
       <main className="container mx-auto grid grid-cols-3">
 
-        <div className="col-span-2">
-          <Map/>
-        </div>
+        {
+          listingsGeoJson &&
+          <div className="col-span-2">
+            <Map listingsGeoJson={listingsGeoJson}/>
+          </div>
+        }
 
         <div>
-          <Filters/>
+          <Filters setFilters={setFilters}/>
 
           <Auth0Provider
             domain="dev-q9qzn2lm.us.auth0.com"
