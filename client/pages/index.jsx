@@ -18,10 +18,11 @@ export default function Home() {
 
   const [listings, setListings] = useState([]);
   const [listingsGeoJson, setListingsGeoJson] = useState(null);
+  const [filterOptions, setFilterOptions] = useState({maxPrice: 0, neighbourhoods: [''], maxReviews: 0});
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get('https://localhost:7114/Listing/summary?skip=0&take=100');
+      const response = await axios.get('https://localhost:7114/Listing/summary/all');
 
       setListings(formatListings(response.data));
       setListingsGeoJson(formatGeoJson(formatListings(response.data)));
@@ -29,6 +30,19 @@ export default function Home() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setFilterOptions({
+      maxPrice: listings.reduce((max, listing) => Math.max(max, listing.price), 0),
+      neighbourhoods: listings.reduce((neighbourhoods, listing) => {
+        if (!neighbourhoods.includes(listing.neighbourhood)) {
+          neighbourhoods.push(listing.neighbourhood);
+        }
+        return neighbourhoods;
+      }, []),
+      maxReviews: listings.reduce((max, listing) => Math.max(max, listing.numberOfReviews), 0)
+    });
+  }, [listings]);
 
   useEffect(() => {
     console.log("formatting geojson...");
@@ -65,7 +79,7 @@ export default function Home() {
     listings = listings.filter(listing => {
       return listing.price <= filters.priceFilter &&
         listing.numberOfReviews >= filters.reviewsFilter &&
-        listing.neighbourhood.toLowerCase().includes(filters.neighbourhoodFilter.toLowerCase());
+        (listing.neighbourhood.toLowerCase().includes(filters.neighbourhoodFilter.toLowerCase()) || filters.neighbourhoodFilter === '');
     });
 
     return {
@@ -116,7 +130,7 @@ export default function Home() {
         }
 
         <div>
-          <Filters setFilters={setFilters}/>
+          <Filters setFilters={setFilters} maxPrice={filterOptions.maxPrice} neighbourhoods={filterOptions.neighbourhoods} maxReviews={filterOptions.maxReviews}/>
 
           <Auth0Provider
             domain="dev-q9qzn2lm.us.auth0.com"

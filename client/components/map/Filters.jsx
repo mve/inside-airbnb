@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import Slider from 'rc-slider';
+import Select from '../core/Select';
+import 'rc-slider/assets/index.css';
 
-const Filters = ({ setFilters }) => {
+const Filters = ({ setFilters, maxPrice, neighbourhoods, maxReviews }) => {
 
   const [priceFilter, setPriceFilter] = useState(250);
   const [neighbourhoodFilter, setNeighbourhoodFilter] = useState('');
@@ -18,17 +21,17 @@ const Filters = ({ setFilters }) => {
   };
 
   return (
-    <div>
+    <div className="pl-4">
       <h2 className="text-lg font-bold">Filters</h2>
 
       <h3>Price</h3>
-      <input type="number" onChange={(e) => setPriceFilter(e.target.value)}/>
+      <Slider min={0} max={maxPrice} defaultValue={300} onChange={(priceValue) => setPriceFilter(priceValue)} />
 
       <h3>Neighbourhood</h3>
-      <input type="text" onChange={(e) => setNeighbourhoodFilter(e.target.value)}/>
+      <Select title={'All'} options={neighbourhoods} onChange={(e) => setNeighbourhoodFilter(e.target.value)}></Select>
 
       <h3>Reviews</h3>
-      <input type="number" onChange={(e) => setReviewsFilter(e.target.value)}/>
+      <Slider min={0} max={maxReviews} defaultValue={0} onChange={(reviewsValue) => setReviewsFilter(reviewsValue)} />
 
     </div>
   )
