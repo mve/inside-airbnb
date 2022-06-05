@@ -90,10 +90,12 @@ public class ListingController : ControllerBase
 
     [HttpGet]
     [Route("statistics")]
-    [Authorize("read:statistics")]
+    [Authorize(Policy = "read:statistics")]
     public async Task<ActionResult<List<ListingSummarized>>> GetStatistics()
     {
-        return Ok("statistics"); // TODO implement
+        var statistics = await _listingRepository.GetStatistics();
+        
+        return Ok(statistics);
     }
 
     [HttpGet("{id}")]

@@ -11,4 +11,5 @@ public interface IListingRepository
     Task<Listing?> Update(int id, Listing listingRequest);
     Task<Listing> Create(Listing listing);
     Task Delete(int id);
+    Task<Statistics> GetStatistics();
 }

@@ -1,6 +1,7 @@
 using System.Globalization;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace api.repositories;
 
@@ -12,11 +13,6 @@ public class ListingRepository : IListingRepository
     {
         _context = context;
     }
-
-    // public async Task<IEnumerable<Listing>> GetAll(int take, int skip)
-    // {
-    //     return await _context.Listings.Skip(skip).Take(take).ToListAsync();
-    // }
 
     public async Task<IEnumerable<ListingSummarized>> GetAllSummarized(int take, int skip)
     {
@@ -190,5 +186,75 @@ public class ListingRepository : IListingRepository
         _context.Listings.Remove(dbListing);
         await _context.SaveChangesAsync();
     }
-    
+
+    public async Task<Statistics> GetStatistics()
+    {
+        var statistics = new Statistics();
+        statistics.ListingsPerNeighbourhood = new List<ListingsPerNeighbourhood>();
+        statistics.ResponseTimes = new List<ResponseTime>();
+        statistics.TopTenHosts = new List<TopHost>();
+
+        // get number of listings per neighbourhood
+        var listingsPerNeighbourhood = await _context.Listings
+            .GroupBy(l => l.NeighbourhoodCleansed)
+            .Select(g => new {Neighbourhood = g.Key, Count = g.Count()})
+            .ToListAsync();
+
+        listingsPerNeighbourhood.ForEach(h =>
+        {
+            statistics.ListingsPerNeighbourhood.Add(new ListingsPerNeighbourhood
+            {
+                Neighbourhood = h.Neighbourhood ?? "Unknown",
+                Count = h.Count
+            });
+        });
+
+        var responseTimes = await _context.Listings
+            .GroupBy(l => l.HostResponseTime)
+            .Select(g => new {HostResponseTime = g.Key, Count = g.Count()})
+            .ToListAsync();
+
+        responseTimes.ForEach(h =>
+        {
+            statistics.ResponseTimes.Add(new ResponseTime
+            {
+                Time = h.HostResponseTime,
+                Count = h.Count
+            });
+        });
+
+        var percentageOfSuperHosts = await _context.Listings
+            .GroupBy(l => l.HostIsSuperhost)
+            .Select(g => new {HostIsSuperhost = g.Key, Count = g.Count()})
+            .ToListAsync();
+
+        percentageOfSuperHosts.ForEach(h =>
+        {
+            statistics.TotalHosts += h.Count;
+
+            if (h.HostIsSuperhost == "t")
+            {
+                statistics.TopHosts = h.Count;
+            }
+        });
+
+        var TopHostsByListings = await _context.Listings
+            .GroupBy(l => new {l.HostId, l.HostName})
+            .Select(g => new {HostId = g.Key.HostId, Count = g.Count(), HostName = g.Key.HostName})
+            .OrderByDescending(g => g.Count)
+            .Take(10)
+            .ToListAsync();
+
+        TopHostsByListings.ForEach(h =>
+        {
+            statistics.TopTenHosts.Add(new TopHost
+            {
+                HostId = h.HostId,
+                HostName = h.HostName,
+                Count = h.Count
+            });
+        });
+
+        return statistics;
+    }
 }

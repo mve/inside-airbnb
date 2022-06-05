@@ -80,7 +80,8 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("read:statistics", policy => policy.Requirements.Add(new HasScopeRequirement("read:statistics", domain)));
+    options.AddPolicy("read:statistics", policy => policy.RequireClaim("permissions", "read:statistics"));
+    // options.AddPolicy("read:statistics", policy => policy.Requirements.Add(new HasScopeRequirement("read:statistics", domain)));
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
