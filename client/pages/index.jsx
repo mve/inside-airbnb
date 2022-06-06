@@ -141,6 +141,7 @@ export default function Home() {
             redirectUri={process.env.NEXT_PUBLIC_REDIRECT_URI}
             scope="read:statistics"
             audience={process.env.NEXT_PUBLIC_AUTH0_AUDIENCE}
+            cacheLocation="localstorage"
           >
             <Admin/>
           </Auth0Provider>
