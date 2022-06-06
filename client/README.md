@@ -6,5 +6,5 @@ Client made with Next.js.
 * Start the project with ``npm run start``
 
 ## Docker
-* Build the image with ``docker build -t inside-airbnb-next .``
-* Run the image with ``docker run -p -d 3000:3000 inside-airbnb-next:1.0``
+* Build the image with ``docker build -t mikevanegmond/inside-airbnb-next-mve:1.0 .``
+* Run the image with ``docker run -p -d 3000:3000 mikevanegmond/inside-airbnb-next-mve:1.0``

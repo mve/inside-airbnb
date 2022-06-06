@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  inside-airbnb-next:
+    image: mikevanegmond/inside-airbnb-next-mve:1.0
+    ports:
+      - '80:3000'

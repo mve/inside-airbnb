@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:3000/").AllowAnyMethod().AllowAnyHeader(); // TODO change to live endpoint on deployment
+            policy.WithOrigins("http://inside-airbnb-mve-next.azurewebsites.net/", "https://inside-airbnb-mve-next.azurewebsites.net/", "http://inside-airbnb-mve-next.azurewebsites.net", "https://inside-airbnb-mve-next.azurewebsites.net").AllowAnyMethod().AllowAnyHeader(); // TODO change to live endpoint on deployment
         });
 });
 
