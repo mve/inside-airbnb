@@ -21,7 +21,7 @@ const Filters = ({ setFilters, maxPrice, neighbourhoods, maxReviews }) => {
   };
 
   return (
-    <div className="pl-4">
+    <div>
       <h2 className="text-lg font-bold">Filters</h2>
 
       <h3>Price</h3>

@@ -7,6 +7,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import Filters from '../components/map/Filters';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import SelectedListing from '../components/core/SelectedListing';
 
 export default function Home() {
 
@@ -19,6 +20,7 @@ export default function Home() {
   const [listings, setListings] = useState([]);
   const [listingsGeoJson, setListingsGeoJson] = useState(null);
   const [filterOptions, setFilterOptions] = useState({maxPrice: 0, neighbourhoods: [''], maxReviews: 0});
+  const [selectedListingId, setSelectedListingId] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -125,11 +127,12 @@ export default function Home() {
         {
           listingsGeoJson &&
           <div className="col-span-2">
-            <Map listingsGeoJson={listingsGeoJson}/>
+            <Map listingsGeoJson={listingsGeoJson} setSelectedListingId={setSelectedListingId}/>
+            <SelectedListing selectedListingId={selectedListingId}/>
           </div>
         }
 
-        <div>
+        <div className="pl-4">
           <Filters setFilters={setFilters} maxPrice={filterOptions.maxPrice} neighbourhoods={filterOptions.neighbourhoods} maxReviews={filterOptions.maxReviews}/>
 
           <Auth0Provider

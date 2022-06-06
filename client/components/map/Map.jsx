@@ -5,7 +5,7 @@ import axios from 'axios';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZXZhbmVnbW9uZCIsImEiOiJjbDJua2l6N3gweHp6M2luazRudnhvYjlvIn0.dhCIBfF6WJztCACIlu8FOQ';
 
-const Map = ({listingsGeoJson}) => {
+const Map = ({listingsGeoJson, setSelectedListingId}) => {
 
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -153,6 +153,7 @@ const Map = ({listingsGeoJson}) => {
           const coordinates = e.features[0].geometry.coordinates.slice();
           const name = e.features[0].properties.name;
           const hostname = e.features[0].properties.hostname;
+          const price = e.features[0].properties.price;
 
           // Ensure that if the map is zoomed out such that
           // multiple copies of the feature are visible, the
@@ -164,9 +165,12 @@ const Map = ({listingsGeoJson}) => {
           new mapboxgl.Popup()
           .setLngLat(coordinates)
           .setHTML(
-            `<b>${name}</b><br>By ${hostname}`
+            `<b>${name}</b><br>By ${hostname}<br>Price: € ${price}`
           )
           .addTo(map.current);
+
+          setSelectedListingId(e.features[0].properties.id);
+
         });
 
       }
