@@ -15,7 +15,7 @@ const Admin = () => {
       const token = await getAccessTokenSilently();
 
       const response = await fetch(
-        `https://localhost:7114/Listing/statistics`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/Listing/statistics`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

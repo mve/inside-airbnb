@@ -6,7 +6,7 @@ const SelectedListing = ({ selectedListingId }) => {
   const [selectedListing, setSelectedListing] = useState(null);
 
   const getListing = async () => {
-    const response = await fetch(`https://localhost:7114/Listing/${selectedListingId}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/Listing/${selectedListingId}`);
     const responseData = await response.json();
     setSelectedListing(responseData);
   }

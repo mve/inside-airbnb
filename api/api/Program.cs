@@ -28,24 +28,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "SampleInstance";
 });
 
-// builder.Services.AddStackExchangeRedisCache(options =>
-// {
-//     options.ConfigurationOptions = new ConfigurationOptions
-//     {
-//         EndPoints =
-//         {
-//             {"inside-airbnb.redis.cache.windows.net", 6380}
-//         },
-//         ConnectTimeout = 5000,
-//         SyncTimeout = 60000,
-//         AsyncTimeout = 60000,
-//         AbortOnConnectFail = false,
-//     };
-//     options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
-//     options.InstanceName = "SampleInstance";
-// });
-
-
 
 // Add services to the container.
 
@@ -123,6 +105,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Content-Type", "application/json");
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

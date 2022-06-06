@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get('https://localhost:7114/Listing/summary/all');
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/Listing/summary/all`);
 
       setListings(formatListings(response.data));
       setListingsGeoJson(formatGeoJson(formatListings(response.data)));
@@ -138,9 +138,9 @@ export default function Home() {
           <Auth0Provider
             domain="dev-q9qzn2lm.us.auth0.com"
             clientId="5eDc8JhFc7TylAQiiyFRnaW38VL4Qmrb"
-            redirectUri="http://localhost:3000/"
+            redirectUri={process.env.NEXT_PUBLIC_REDIRECT_URI}
             scope="read:statistics"
-            audience="https://localhost:7114/"
+            audience={process.env.NEXT_PUBLIC_AUTH0_AUDIENCE}
           >
             <Admin/>
           </Auth0Provider>
