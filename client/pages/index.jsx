@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import NavBar from '../components/core/NavBar'
 import Footer from '../components/core/Footer'
-import Map from '../components/map/map';
-import Admin from '../components/admin/admin';
+import Map from '../components/map/Map';
+import Admin from '../components/admin/Admin';
 import { Auth0Provider } from "@auth0/auth0-react";
 import Filters from '../components/map/Filters';
 import { useEffect, useState } from 'react';
