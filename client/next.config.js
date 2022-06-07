@@ -1,5 +1,5 @@
 const ContentSecurityPolicy = `
-  default-src 'self' *.auth0.com api.mapbox.com events.mapbox.com 'unsafe-eval' 'unsafe-inline' data: blob: https://inside-airbnb-mve-api.azurewebsites.net;
+  default-src 'self' *.auth0.com api.mapbox.com events.mapbox.com 'unsafe-eval' 'unsafe-inline' data: blob: https://inside-airbnb-mve-api.azurewebsites.net https://a0.muscache.com;
 `
 
 const securityHeaders = [
@@ -36,6 +36,7 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     domains: ['lh3.googleusercontent.com', 's.gravatar.com', 'a0.muscache.com']
   },
