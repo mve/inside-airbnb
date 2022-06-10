@@ -47,10 +47,7 @@ export default function Home() {
   }, [listings]);
 
   useEffect(() => {
-    console.log("formatting geojson...");
     setListingsGeoJson(formatGeoJson(listings));
-    console.log(listingsGeoJson);
-    console.log("done formatting geojson...");
 
   }, [listings, filters]);
 

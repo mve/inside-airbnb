@@ -14,10 +14,10 @@
       <com.blazemeter.jmeter.threads.arrivals.ArrivalsThreadGroup guiclass="com.blazemeter.jmeter.threads.arrivals.ArrivalsThreadGroupGui" testclass="com.blazemeter.jmeter.threads.arrivals.ArrivalsThreadGroup" testname="PerformanceWorkShop - Arrivals Thread Group" enabled="true">
         <elementProp name="ThreadGroup.main_controller" elementType="com.blazemeter.jmeter.control.VirtualUserController"/>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <stringProp name="TargetLevel">3</stringProp>
-        <stringProp name="RampUp">40</stringProp>
-        <stringProp name="Steps">3</stringProp>
-        <stringProp name="Hold">20</stringProp>
+        <stringProp name="TargetLevel">5</stringProp>
+        <stringProp name="RampUp">50</stringProp>
+        <stringProp name="Steps">8</stringProp>
+        <stringProp name="Hold">30</stringProp>
         <stringProp name="LogFilename"></stringProp>
         <stringProp name="Iterations"></stringProp>
         <stringProp name="ConcurrencyLimit"></stringProp>
@@ -30,22 +30,15 @@
           <boolProp name="LIMIT_MAX_THREAD_NUMBER">false</boolProp>
         </com.blazemeter.jmeter.controller.ParallelSampler>
         <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://localhost:7114/Listing/summary?skip=0&amp;take=17000" enabled="false">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://localhost:7114/Listing/summary/all" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
-                <elementProp name="skip" elementType="HTTPArgument">
+                <elementProp name="nocache" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">0</stringProp>
+                  <stringProp name="Argument.value">true</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                   <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  <stringProp name="Argument.name">skip</stringProp>
-                </elementProp>
-                <elementProp name="take" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">17000</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                  <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                  <stringProp name="Argument.name">take</stringProp>
+                  <stringProp name="Argument.name">nocache</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
@@ -53,7 +46,7 @@
             <stringProp name="HTTPSampler.port">7114</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">Listing/summary</stringProp>
+            <stringProp name="HTTPSampler.path">Listing/summary/all</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -102,7 +95,7 @@
             </ResultCollector>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://localhost:7114/Listing/summary/all" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="https://localhost:7114/Listing/137026" enabled="false">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="nocache" elementType="HTTPArgument">
@@ -118,7 +111,7 @@
             <stringProp name="HTTPSampler.port">7114</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">Listing/summary/all</stringProp>
+            <stringProp name="HTTPSampler.path">Listing/137026</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

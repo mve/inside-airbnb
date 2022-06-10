@@ -45,14 +45,14 @@ public class ListingRepository : IListingRepository
                 Price = l.Price,
                 NumberOfReviews = l.NumberOfReviews
             }
-        ).ToListAsync();
+        ).AsNoTracking().ToListAsync();
 
         return listings;
     }
 
     public async Task<Listing?> Get(int id)
     {
-        return await _context.Listings.Include(l => l.Reviews).FirstOrDefaultAsync(l => l.Id == id);
+        return await _context.Listings.Include(l => l.Reviews).AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
     }
 
     public async Task<Listing?> Update(int id, Listing listingRequest)
