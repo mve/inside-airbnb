@@ -1,9 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import axios from 'axios';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoibWlrZXZhbmVnbW9uZCIsImEiOiJjbDJua2l6N3gweHp6M2luazRudnhvYjlvIn0.dhCIBfF6WJztCACIlu8FOQ';
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const Map = ({listingsGeoJson, setSelectedListingId}) => {
 
@@ -18,7 +17,7 @@ const Map = ({listingsGeoJson, setSelectedListingId}) => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mikevanegmond/cl3bie7v4000z14qoqq7xlr37',
+      style: process.env.NEXT_PUBLIC_MAPBOX_STYLE,
       center: [lng, lat],
       zoom: zoom
     });
