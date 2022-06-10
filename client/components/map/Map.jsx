@@ -42,8 +42,6 @@ const Map = ({listingsGeoJson, setSelectedListingId}) => {
   useEffect(() => {
     map.current.on('load', () => {
 
-      console.log("load");
-
       // Only add source if it doesn't exist already
       if (!map.current.getSource('listings')) {
         map.current.addSource('listings', {

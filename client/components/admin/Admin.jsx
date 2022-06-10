@@ -27,10 +27,8 @@ const Admin = () => {
 
       setStatistics(responseData);
 
-      console.log(responseData);
     }
     catch (error) {
-      console.log("Error fetching statistics: ", error); // TODO hide on production
     }
   }
 
